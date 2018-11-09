@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <Employee>
+       <FirstName>vinay</FirstName>
+       <LastName>pradeep</LastName>
+       <city>Hyderabad</city>
+       <country>India</country>
+   </Employee>
