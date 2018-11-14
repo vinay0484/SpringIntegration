@@ -23,8 +23,6 @@
 	<bean id="admin_authentication"
 		class="com.knack.Authentications.AdminAuthentications"></bean>
 
-<bean id="Stringtomsg"
-		class="com.knack.integrationClasses.StringToMessage"></bean>
 
 
 
