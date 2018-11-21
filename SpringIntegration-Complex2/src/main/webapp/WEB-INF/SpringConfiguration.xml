@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.0.xsd
+		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-4.0.xsd
+		http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml-4.0.xsd">
+
+
+
+	<int:channel id="MessageChannel" />
+	<int:channel id="OutboundChannel" />
+	<int:channel id="directInput" />
+	<int:channel id="CanonicalOutputChannel" />
+	<int:channel id="routerinputChanell" />
+   <int:channel id="outChannel" />
+
+	<!-- unmarshalling XML string to object -->
+
+	<int-xml:unmarshalling-transformer id="XML String to Object Converter"
+		input-channel="MessageChannel" output-channel="directInput" unmarshaller="Jaxbunmarshaller" />
+
+
+	<bean id="Jaxbunmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+		<property name="contextPath" value="com.knack.jaxbClasses"></property>
+	</bean>
+
+
+	<!-- xml data object to map transformer -->
+
+	<int:object-to-map-transformer input-channel="directInput" output-channel="OutboundChannel"
+		flatten="false" />
+
+
+
+
+<int:service-activator id="service"  input-channel="OutboundChannel" output-channel="CanonicalOutputChannel"  ref="Endpoint" method="xml_data" ></int:service-activator>
+
+
+	<bean id="Endpoint" class="com.knack.Endpoint.ServiceActivator"></bean>
+
+
+
+
+
+
+
+
+</beans>
