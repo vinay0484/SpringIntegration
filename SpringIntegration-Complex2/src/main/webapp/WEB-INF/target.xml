@@ -9,30 +9,22 @@
 		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-4.0.xsd
 		http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml-4.0.xsd">
 
+
+
 	<int:channel id="targetInputChannel" />
 	<int:channel id="targetStringOutputChannel"/>
 	<int:channel id="targetObjectOuputchannel"/>
 	
-	<int-file:inbound-channel-adapter directory="C://Target" channel="targetInputChannel"
+	<!-- <int-file:inbound-channel-adapter directory="C://Target" channel="targetInputChannel"
 		filename-pattern="*.xml">
 		<int:poller fixed-delay="500"></int:poller>
 	</int-file:inbound-channel-adapter>
 
-
-
-
 	<int-file:file-to-string-transformer input-channel="targetInputChannel"
 		output-channel="targetStringOutputChannel" />
 
-
-	
-
-
 	<int-xml:unmarshalling-transformer id="XML String to Object Converter1"
 		input-channel="targetStringOutputChannel" output-channel="targetObjectOuputchannel" unmarshaller="Jaxbunmarshaller2" />
-
-
-	
 
 	<bean id="Jaxbunmarshaller2" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="contextPath" value="com.knack.targetJax"></property>
@@ -40,12 +32,16 @@
 
 	<int:service-activator input-channel="targetObjectOuputchannel" ref="target" method="target_prop"/>
 
+ -->
+
 <bean id="target" class="com.knack.targetProcess.TargetProcess"/>
-	 <import resource="SpringConfiguration.xml" />
+	
+
+		
+		<int:service-activator input-channel="CanonicalOutputChannel" ref="target" method="target_obj"/>
 	 
 	 
-	 	<int:service-activator input-channel="outChannel" ref="target" method="target_obj"
-		output-channel="routerinputChanell" />
+	 
 </beans>
 
 

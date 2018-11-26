@@ -33,7 +33,7 @@ public class IntegrationController
 		try
 		{
 			MessageChannel.send(message);
-			logger.error("Success");
+
 			return new ResponseEntity<String>("Success", HttpStatus.ACCEPTED);
 		}
 		catch (final Exception e)

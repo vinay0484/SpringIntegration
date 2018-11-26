@@ -9,14 +9,16 @@
 		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-4.0.xsd
 		http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml-4.0.xsd">
 
-
-
 	<int:channel id="MessageChannel" />
 	<int:channel id="OutboundChannel" />
 	<int:channel id="directInput" />
 	<int:channel id="CanonicalOutputChannel" />
-	<int:channel id="routerinputChanell" />
-   <int:channel id="outChannel" />
+	<int:channel id="routerinputChannel" />
+	<int:channel id="outChannel" />
+	<int:channel id="XMLChannel" />
+	<int:channel id="CSVChannel" />
+	<int:channel id="CONSOLEChannel" />
+	<int:channel id="LOGChannel" />
 
 	<!-- unmarshalling XML string to object -->
 
@@ -28,25 +30,34 @@
 		<property name="contextPath" value="com.knack.jaxbClasses"></property>
 	</bean>
 
-
 	<!-- xml data object to map transformer -->
 
 	<int:object-to-map-transformer input-channel="directInput" output-channel="OutboundChannel"
 		flatten="false" />
 
-
-
-
-<int:service-activator id="service"  input-channel="OutboundChannel" output-channel="CanonicalOutputChannel"  ref="Endpoint" method="xml_data" ></int:service-activator>
-
-
+	<int:service-activator id="service" input-channel="OutboundChannel" ref="Endpoint" method="map_data"
+		output-channel="CanonicalOutputChannel" />
 	<bean id="Endpoint" class="com.knack.Endpoint.ServiceActivator"></bean>
+	<bean id="target" class="com.knack.targetProcess.TargetProcess" />
+
+	<int:service-activator input-channel="CanonicalOutputChannel" ref="target" method="target_obj"
+		output-channel="routerinputChannel" />
+
+
+	<int:header-value-router input-channel="routerinputChannel" header-name="type">
+		<int:mapping value="xml" channel="XMLChannel" />
+		<int:mapping value="csv" channel="CSVChannel" />
+		<int:mapping value="console" channel="CONSOLEChannel" />
+		<int:mapping value="log" channel="LOGChannel" />
+	</int:header-value-router>
 
 
 
+	<int:service-activator id="xmlservice" input-channel="XMLChannel" ref="XmlTarget" />
+	<int:service-activator id="csvservice" input-channel="CSVChannel" ref="CsvTarget" />
+	<int:service-activator id="consoleservice" input-channel="CONSOLEChannel" ref="ConsoleTarget" />
 
-
-
-
-
+	<bean id="XmlTarget" class="com.knack.TargetClasses.XmlTarget" />
+	<bean id="CsvTarget" class="com.knack.TargetClasses.CsvTarget" />
+	<bean id="ConsoleTarget" class="com.knack.TargetClasses.ConsoleTarget" />
 </beans>
